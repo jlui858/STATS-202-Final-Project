@@ -1,0 +1,398 @@
+---
+title: "STATS 202 Final Project"
+output: html_notebook
+---
+```{r}
+# run data
+data <- read.csv("train_data.csv")
+
+data <- data[data$day %in% 0:87, ]
+
+# training set for different symbols
+data_A <- data[data$symbol %in% "A", ]
+data_B <- data[data$symbol %in% "B", ]
+data_C <- data[data$symbol %in% "C", ]
+data_D <- data[data$symbol %in% "D", ]
+data_E <- data[data$symbol %in% "E", ]
+data_F <- data[data$symbol %in% "F", ]
+data_G <- data[data$symbol %in% "G", ]
+data_H <- data[data$symbol %in% "H", ]
+data_I <- data[data$symbol %in% "I", ]
+data_J <- data[data$symbol %in% "J", ]
+
+library(forecast)
+
+# Time series model for A
+model_A <- auto.arima(data_A$open, xreg = 1:lambda = "auto")
+price_forecast_A <- forecast(data_A$open, h = 45360, model = model_A)
+plot(price_forecast_A)
+price_forecast_data_A <- data.frame(price_forecast_A$mean)
+
+# Time series model for B
+model_B <- auto.arima(data_B$open, lambda = "auto")
+price_forecast_B <- forecast(model_B, h = 45360)
+plot(price_forecast_B)
+price_forecast_data_B <- data.frame(price_forecast_B$mean)
+
+# Time series model for C
+model_C <- auto.arima(data_C$open, lambda = "auto")
+price_forecast_C <- forecast(model_C, h = 45360)
+plot(price_forecast_C)
+price_forecast_data_C <- data.frame(price_forecast_C$mean)
+
+# Time series model for D
+model_D <- auto.arima(data_D$open, lambda = "auto")
+price_forecast_D <- forecast(model_D, h = 45360)
+plot(price_forecast_D)
+price_forecast_data_D <- data.frame(price_forecast_D$mean)
+
+# Time series model for E
+model_E <- auto.arima(data_E$open, lambda = "auto")
+price_forecast_E <- forecast(model_A, h = 45360)
+plot(price_forecast_E)
+price_forecast_data_E <- data.frame(price_forecast_E$mean)
+
+# Time series model for F
+model_F <- auto.arima(data_F$open, lambda = "auto")
+price_forecast_F <- forecast(model_F, h = 45360)
+plot(price_forecast_F)
+price_forecast_data_F <- data.frame(price_forecast_F$$mean)
+
+# Time series model for G
+model_G <- auto.arima(data_G$open, lambda = "auto")
+price_forecast_G <- forecast(model_G, h = 45360)
+plot(price_forecast_G)
+price_forecast_data_G <- data.frame(price_forecast_G$mean)
+
+# Time series model for H
+model_H <- auto.arima(data_H$open, lambda = "auto")
+price_forecast_H <- forecast(model_H, h = 45360)
+plot(price_forecast_H)
+price_forecast_data_H <- data.frame(price_forecast_H$mean)
+
+# Time series model for I
+model_I <- auto.arima(data_I$open, lambda = "auto")
+price_forecast_I <- forecast(model_I, h = 45360)
+plot(price_forecast_I)
+price_forecast_data_I <- data.frame(price_forecast_I$mean)
+
+# Time series model for J
+model_J <- auto.arima(data_J$open, lambda = "auto")
+price_forecast_J <- forecast(model_J, h = 45360)
+plot(price_forecast_J)
+price_forecast_data_J <- data.frame(price_forecast_J$mean)
+```
+
+
+```{r}
+# create training set from  day 0 to day 78
+train <- data[data$day %in% 0:78, ]
+  
+# create test set from day 79 to day 87
+test <- data[data$day %in% 79:87, ]
+
+# training set for different symbols
+train_A <- train[train$symbol %in% "A", ]
+train_B <- train[train$symbol %in% "B", ]
+train_C <- train[train$symbol %in% "C", ]
+train_D <- train[train$symbol %in% "D", ]
+train_E <- train[train$symbol %in% "E", ]
+train_F <- train[train$symbol %in% "F", ]
+train_G <- train[train$symbol %in% "G", ]
+train_H <- train[train$symbol %in% "H", ]
+train_I <- train[train$symbol %in% "I", ]
+train_J <- train[train$symbol %in% "J", ]
+
+# test set for different symbols
+test_A <- test[test$symbol %in% "A", ]
+test_B <- test[test$symbol %in% "B", ]
+test_C <- test[test$symbol %in% "C", ]
+test_D <- test[test$symbol %in% "D", ]
+test_E <- test[test$symbol %in% "E", ]
+test_F <- test[test$symbol %in% "F", ]
+test_G <- test[test$symbol %in% "G", ]
+test_H <- test[test$symbol %in% "H", ]
+test_I <- test[test$symbol %in% "I", ]
+test_J <- test[test$symbol %in% "J", ]
+
+model_A <- auto.arima(train_A$open, lambda = "auto")
+price_forecast <- forecast(model_A, h = 9 * 5040)
+plot(price_forecast)
+price_forecast_train <- data.frame(price_forecast$mean)
+```
+
+
+```{r}
+# linear model for B - looking at changes in price at 6:00:00 over next 9 days
+B_lm <- train_B[train_B$time %in% "06:00:00", ]
+plot(B_lm$day, B_lm$average)
+days <- 1:nrow(B_lm)
+price_lm <- lm(B_lm$average ~ days)
+future <- data.frame(days = 49:57)
+price_pred <- predict(price_lm, future)
+plot(days, B_lm$average, xlim = c(0,60))
+points(49:57, price_pred, col = 'blue')
+summary(price_lm)
+
+# plotting test values against forecast
+plot(1:39391, test_B$open)
+par(new=TRUE)
+plot(1:45360, new_df$price_forecast.mean)
+```
+
+```{r}
+library(tidyverse)
+library(glmnet)
+training.data <- read_csv(file = 'train_data.csv')
+```
+
+```{r by_symbol}
+symbol_A <- training.data %>% filter(symbol == 'A')
+symbol_B <- training.data %>% filter(symbol == 'B')
+symbol_C <- training.data %>% filter(symbol == 'C')
+symbol_D <- training.data %>% filter(symbol == 'D')
+symbol_E <- training.data %>% filter(symbol == 'E')
+symbol_F <- training.data %>% filter(symbol == 'F')
+symbol_G <- training.data %>% filter(symbol == 'G')
+symbol_H <- training.data %>% filter(symbol == 'H')
+symbol_I <- training.data %>% filter(symbol == 'I')
+symbol_J <- training.data %>% filter(symbol == 'J')
+```
+
+```{r correlation with A}
+cor(x = symbol_A$open, y = symbol_B$open[1:426897])cor(x = symbol_A$open, y = symbol_C$open[1:426897])
+cor(x = symbol_A$open, y = symbol_D$open[1:426897])
+cor(x = symbol_A$open, y = symbol_E$open[1:426897])
+cor(x = symbol_A$open[1:412631], y = symbol_F$open)
+cor(x = symbol_A$open, y = symbol_G$open[1:426897])
+cor(x = symbol_A$open, y = symbol_H$open[1:426897])
+cor(x = symbol_A$open, y = symbol_I$open[1:426897])
+cor(x = symbol_A$open, y = symbol_J$open[1:426897])
+```
+A/F; A/B; A/D
+
+```{r correlation with B}
+cor(x = symbol_B$open, y = symbol_C$open[1:427909])
+cor(x = symbol_B$open, y = symbol_D$open[1:427909])
+cor(x = symbol_B$open, y = symbol_E$open[1:427909])
+cor(x = symbol_B$open[1:412631], y = symbol_F$open)
+cor(x = symbol_B$open, y = symbol_G$open[1:427909])
+cor(x = symbol_B$open, y = symbol_H$open[1:427909])
+cor(x = symbol_B$open, y = symbol_I$open[1:427909])
+cor(x = symbol_B$open, y = symbol_J$open[1:427909])
+```
+B/D 
+
+```{r correlation with C}
+cor(x = symbol_C$open[1:437040], y = symbol_D$open)
+cor(x = symbol_C$open[1:438229], y = symbol_E$open)
+cor(x = symbol_C$open[1:412631], y = symbol_F$open)
+cor(x = symbol_C$open[1:436946], y = symbol_G$open)
+cor(x = symbol_C$open[1:437760], y = symbol_H$open)
+cor(x = symbol_C$open[1:437040], y = symbol_I$open)
+cor(x = symbol_C$open[1:437322], y = symbol_J$open)
+```
+
+```{r correlation with D}
+cor(x = symbol_D$open, y = symbol_E$open[1:437040])
+cor(x = symbol_D$open[1:412631], y = symbol_F$open)
+cor(x = symbol_D$open[1:436946], y = symbol_G$open)
+cor(x = symbol_D$open, y = symbol_H$open[1:437040])
+cor(x = symbol_D$open[1:437040], y = symbol_I$open)
+cor(x = symbol_D$open, y = symbol_J$open[1:437040])
+```
+D/F
+
+```{r correlation with E}
+cor(x = symbol_E$open[1:412631], y = symbol_F$open)
+cor(x = symbol_E$open[1:436946], y = symbol_G$open)
+cor(x = symbol_E$open[1:437760], y = symbol_H$open)
+cor(x = symbol_E$open[1:437040], y = symbol_I$open)
+cor(x = symbol_E$open[1:437322], y = symbol_J$open)
+```
+
+```{r correlation with F}
+cor(x = symbol_F$open, y = symbol_G$open[1:412631])
+cor(x = symbol_F$open, y = symbol_H$open[1:412631])
+cor(x = symbol_F$open, y = symbol_I$open[1:412631])
+cor(x = symbol_F$open, y = symbol_J$open[1:412631])
+```
+
+```{r correlation with G}
+cor(x = symbol_G$open, y = symbol_H$open[1:436946])
+cor(x = symbol_G$open, y = symbol_I$open[1:436946])
+cor(x = symbol_G$open, y = symbol_J$open[1:436946])
+```
+
+```{r correlation with H}
+cor(x = symbol_H$open[1:437040], y = symbol_I$open)
+cor(x = symbol_H$open[1:437322], y = symbol_J$open)
+```
+H/J negative
+
+```{r correlation with I}
+cor(x = symbol_I$open, y = symbol_J$open[1:437040])
+```
+
+```{r}
+previous_close_A = lag(symbol_A$close)
+symbol_A <- symbol_A %>% add_column(previous_close_A)
+previous_close_B = lag(symbol_B$close)
+symbol_B <- symbol_B %>% add_column(previous_close_B)
+previous_close_C = lag(symbol_C$close)
+symbol_C <- symbol_C %>% add_column(previous_close_C)
+previous_close_D = lag(symbol_D$close)
+symbol_D <- symbol_D %>% add_column(previous_close_D)
+previous_close_E = lag(symbol_E$close)
+symbol_E <- symbol_E %>% add_column(previous_close_E)
+previous_close_F = lag(symbol_F$close)
+symbol_F <- symbol_F %>% add_column(previous_close_F)
+previous_close_G = lag(symbol_G$close)
+symbol_G <- symbol_G %>% add_column(previous_close_G)
+previous_close_H = lag(symbol_H$close)
+symbol_H <- symbol_H %>% add_column(previous_close_H)
+previous_close_I = lag(symbol_I$close)
+symbol_I <- symbol_I %>% add_column(previous_close_I)
+previous_close_J = lag(symbol_J$close)
+symbol_J <- symbol_J %>% add_column(previous_close_J)
+```
+
+
+```{r}
+# twleve_previous_A = lag(symbol_A$close, k = 12)
+# symbol_A <- symbol_A %>% add_column(twleve_previous_A)
+# twleve_previous_B = lag(symbol_B$close, k = 12)
+# symbol_B <- symbol_B %>% add_column(twleve_previous_B)
+# twleve_previous_C = lag(symbol_C$close, k = 12)
+# symbol_C <- symbol_C %>% add_column(twleve_previous_C)
+# twleve_previous_D = lag(symbol_D$close, k = 12)
+# symbol_D <- symbol_D %>% add_column(twleve_previous_D)
+```
+
+
+```{r open}
+# ggplot(symbol_A, aes(y = symbol_A$open,x = symbol_A$day)) + geom_point(size = 1)
+# ggplot(symbol_B, aes(symbol_B$day,symbol_B$open)) + geom_point(size = 1)
+# ggplot(symbol_C, aes(symbol_C$day,symbol_C$open)) + geom_point(size = 1)
+# ggplot(symbol_D, aes(symbol_D$day,symbol_D$open)) + geom_point(size = 1)
+# ggplot(symbol_E, aes(symbol_E$day,symbol_E$open)) + geom_point(size = 1)
+# ggplot(symbol_F, aes(symbol_F$day,symbol_F$open)) + geom_point(size = 1)
+# ggplot(symbol_G, aes(symbol_G$day,symbol_G$open)) + geom_point(size = 1)
+# ggplot(symbol_H, aes(symbol_H$day,symbol_H$open)) + geom_point(size = 1)
+# ggplot(symbol_I, aes(symbol_I$day,symbol_I$open)) + geom_point(size = 1)
+# ggplot(symbol_J, aes(symbol_J$day,symbol_J$open)) + geom_point(size = 1)
+```
+
+```{r high}
+# ggplot(symbol_A, aes(symbol_A$day,symbol_A$high)) + geom_point(size = 1)
+# ggplot(symbol_B, aes(symbol_B$day,symbol_B$high)) + geom_point(size = 1)
+# ggplot(symbol_C, aes(symbol_C$day,symbol_C$high)) + geom_point(size = 1)
+# ggplot(symbol_D, aes(symbol_D$day,symbol_D$high)) + geom_point(size = 1)
+# ggplot(symbol_E, aes(symbol_E$day,symbol_E$high)) + geom_point(size = 1)
+# ggplot(symbol_F, aes(symbol_F$day,symbol_F$high)) + geom_point(size = 1)
+# ggplot(symbol_G, aes(symbol_G$day,symbol_G$high)) + geom_point(size = 1)
+# ggplot(symbol_H, aes(symbol_H$day,symbol_H$high)) + geom_point(size = 1)
+# ggplot(symbol_I, aes(symbol_I$day,symbol_I$high)) + geom_point(size = 1)
+# ggplot(symbol_J, aes(symbol_J$day,symbol_J$high)) + geom_point(size = 1)
+```
+
+```{r low}
+# ggplot(symbol_A, aes(symbol_A$day,symbol_A$low)) + geom_point(size = 1)
+# ggplot(symbol_B, aes(symbol_B$day,symbol_B$low)) + geom_point(size = 1)
+# ggplot(symbol_C, aes(symbol_C$day,symbol_C$low)) + geom_point(size = 1)
+# ggplot(symbol_D, aes(symbol_D$day,symbol_D$low)) + geom_point(size = 1)
+# ggplot(symbol_E, aes(symbol_E$day,symbol_E$low)) + geom_point(size = 1)
+# ggplot(symbol_F, aes(symbol_F$day,symbol_F$low)) + geom_point(size = 1)
+# ggplot(symbol_G, aes(symbol_G$day,symbol_G$low)) + geom_point(size = 1)
+# ggplot(symbol_H, aes(symbol_H$day,symbol_H$low)) + geom_point(size = 1)
+# ggplot(symbol_I, aes(symbol_I$day,symbol_I$low)) + geom_point(size = 1)
+# ggplot(symbol_J, aes(symbol_J$day,symbol_J$low)) + geom_point(size = 1)
+```
+
+```{r low}
+#ggplot(symbol_A, aes(symbol_A$day,symbol_A$close)) + geom_point(size = 1)
+# ggplot(symbol_B, aes(symbol_B$day,symbol_B$close)) + geom_point(size = 1)
+# ggplot(symbol_C, aes(symbol_C$day,symbol_C$close)) + geom_point(size = 1)
+# ggplot(symbol_D, aes(symbol_D$day,symbol_D$close)) + geom_point(size = 1)
+# ggplot(symbol_E, aes(symbol_E$day,symbol_E$close)) + geom_point(size = 1)
+# ggplot(symbol_F, aes(symbol_F$day,symbol_F$close) + geom_point(size = 1)
+# ggplot(symbol_G, aes(symbol_G$day,symbol_G$close)) + geom_point(size = 1)
+# ggplot(symbol_H, aes(symbol_H$day,symbol_H$close)) + geom_point(size = 1)
+# ggplot(symbol_I, aes(symbol_I$day,symbol_I$close)) + geom_point(size = 1)
+# ggplot(symbol_J, aes(symbol_J$day,symbol_J$close)) + geom_point(size = 1)
+```
+
+```{r average}
+#ggplot(symbol_A, aes(symbol_A$day,symbol_A$average)) + geom_point(size = 1)
+# ggplot(symbol_B, aes(symbol_B$day,symbol_B$average)) + geom_point(size = 1)
+# ggplot(symbol_C, aes(symbol_C$day,symbol_C$average)) + geom_point(size = 1)
+# ggplot(symbol_D, aes(symbol_D$day,symbol_D$average)) + geom_point(size = 1)
+# ggplot(symbol_E, aes(symbol_E$day,symbol_E$average)) + geom_point(size = 1)
+# ggplot(symbol_F, aes(symbol_F$day,symbol_F$average) + geom_point(size = 1)
+# ggplot(symbol_G, aes(symbol_G$day,symbol_G$average)) + geom_point(size = 1)
+# ggplot(symbol_H, aes(symbol_H$day,symbol_H$average)) + geom_point(size = 1)
+# ggplot(symbol_I, aes(symbol_I$day,symbol_I$average)) + geom_point(size = 1)
+# ggplot(symbol_J, aes(symbol_J$day,symbol_J$average)) + geom_point(size = 1)
+
+```
+
+```{r A}
+#  ggplot(symbol_A, aes(symbol_A$day)) + 
+#  geom_point(aes(y = symbol_A$high, colour = "high"), size = 0.1) +
+#  geom_point(aes(y = symbol_A$low, colour = "low"), size = 0.1) +
+#  geom_point(aes(y = symbol_A$close, colour = "close"), size = 0.1) +
+#  geom_point(aes(y = symbol_A$average, colour = "average"), size = 0.1) +
+#  geom_point(aes(y = symbol_A$open, colour = "open"), size = 0.1)
+```
+
+
+```{r}
+# ggplot(symbol_A, aes(x = symbol_A$open, y = symbol_A$previous_close_A)) + geom_point()
+# ggplot(symbol_B, aes(x = symbol_B$open, y = symbol_B$previous_close_B)) + geom_point()
+# ggplot(symbol_C, aes(symbol_C$open, symbol_C$previous_close_C)) + geom_point()
+# ggplot(symbol_D, aes(symbol_D$open, symbol_D$previous_close_D)) + geom_point()
+# ggplot(symbol_E, aes(symbol_E$open, symbol_E$previous_close_E)) + geom_point()
+# ggplot(symbol_F, aes(symbol_F$open, symbol_F$previous_close_F)) + geom_point()
+# ggplot(symbol_G, aes(symbol_G$open, symbol_G$previous_close_G)) + geom_point()
+# ggplot(symbol_H, aes(symbol_H$open, symbol_H$previous_close_H)) + geom_point()
+# ggplot(symbol_I, aes(symbol_I$open, symbol_I$previous_close_I)) + geom_point()
+# ggplot(symbol_J, aes(symbol_J$open, symbol_J$previous_close_J)) + geom_point()
+```
+
+
+```{r creating train and test}
+train <- training.data %>% filter(day <= 78)
+test_1 <- training.data %>% filter (day > 78 & day <= 82)
+test_2 <- training.data %>% filter(day > 82 )
+```
+
+```{r}
+lin.mod <- lm(train$open ~., data = train)
+summary(lin.mod)
+```
+
+```{r}
+lin.pred <- predict(lin.mod, newdata = test_1)
+mean((lin.pred - test_1$open)^2)
+```
+
+```{r}
+lin.pred <- predict(lin.mod, newdata = test_2)
+mean((lin.pred - test_2$open)^2)
+```
+
+```{r}
+lm.fit = lm(open ~ high + low + close + average + time + day, data = train)
+summary(lm.fit)
+```
+
+```{r}
+lm.pred <- predict(lm.fit, newdata = test_1)
+mean((lm.pred - test_1$open)^2)
+```
+
+```{r}
+lm.pred <- predict(lm.fit, newdata = test_2)
+mean((lm.pred - test_2$open)^2)
+```
+
